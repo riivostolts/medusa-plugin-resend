@@ -5,10 +5,10 @@
    "main": "index.js",
    "repository": {
       "type": "git",
-      "url": "https://github.com/pevey/medusa-plugin-resend"
+      "url": "https://github.com/riivostolts/medusa-plugin-resend"
    },
    "homepage:": "https://pevey.com/medusa-plugin-resend",
-   "author": "Lacey Pevey",
+   "author": "Riivo Stolts",
    "license": "MIT",
    "devDependencies": {
       "cross-env": "^5.2.1",

@@ -545,6 +545,7 @@ class ResendService extends NotificationService {
       const order = await this.orderService_.retrieve(id, {
          select: [
             "shipping_total",
+            "shipping_tax_total",
             "discount_total",
             "tax_total",
             "refunded_total",
@@ -643,7 +644,7 @@ class ResendService extends NotificationService {
          tax_total: `${this.humanPrice_(tax_total, currencyCode)} ${currencyCode}`,
          discount_total: `${this.humanPrice_(discountTotal, currencyCode)} ${currencyCode}`,
          shipping_total: `${this.humanPrice_(shipping_total, currencyCode)} ${currencyCode}`,
-         shipping_total_incl_tax: `${this.humanPrice_(shipping_total + shipping_tax_total, currencyCode)} ${currencyCode}`,
+         shipping_total_incl_tax: `${this.humanPrice_(shipping_total + (shipping_tax_total || 0), currencyCode)} ${currencyCode}`,
          total: `${this.humanPrice_(total, currencyCode)} ${currencyCode}`,
       }
    }
