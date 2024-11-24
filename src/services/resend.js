@@ -545,7 +545,6 @@ class ResendService extends NotificationService {
       const order = await this.orderService_.retrieve(id, {
          select: [
             "shipping_total",
-            "shipping_tax_total",
             "discount_total",
             "tax_total",
             "refunded_total",
@@ -569,7 +568,7 @@ class ResendService extends NotificationService {
          ],
       })
 
-      const { tax_total, shipping_total, gift_card_total, total, shipping_tax_total } = order
+      const { tax_total, shipping_total, gift_card_total, total } = order
 
       const currencyCode = order.currency_code.toUpperCase()
 
@@ -612,6 +611,7 @@ class ResendService extends NotificationService {
          discounts.concat(giftCards)
       }
 
+      const taxRate = (order.tax_rate || order.region.tax_rate) / 100;
       const locale = await this.extractLocale(order)
 
       // Includes taxes in discount amount
@@ -644,7 +644,7 @@ class ResendService extends NotificationService {
          tax_total: `${this.humanPrice_(tax_total, currencyCode)} ${currencyCode}`,
          discount_total: `${this.humanPrice_(discountTotal, currencyCode)} ${currencyCode}`,
          shipping_total: `${this.humanPrice_(shipping_total, currencyCode)} ${currencyCode}`,
-         shipping_total_incl_tax: `${this.humanPrice_(shipping_total + (shipping_tax_total || 0), currencyCode)} ${currencyCode}`,
+         shipping_total_incl_tax: `${this.humanPrice_(shipping_total * (1 + taxRate), currencyCode)} ${currencyCode}`,
          total: `${this.humanPrice_(total, currencyCode)} ${currencyCode}`,
       }
    }
