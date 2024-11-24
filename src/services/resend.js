@@ -73,7 +73,7 @@ class ResendService extends NotificationService {
 
    async sendNotification(event, eventData, attachmentGenerator) {
       let templateId = this.getTemplateId(event)
-      if (!templateId) { 
+      if (!templateId) {
          throw new MedusaError(MedusaError.Types.INVALID_DATA, "Resend service: No template was set for this event")
       }
 
@@ -107,8 +107,8 @@ class ResendService extends NotificationService {
          if (text) sendOptions.text = text
       }
 
-      if (!sendOptions.subject || (!sendOptions.html && !sendOptions.text && !sendOptions.react)) { 
-         throw new MedusaError(MedusaError.Types.INVALID_DATA, "Resend service: The requested templates were not found. Check template path in config.") 	
+      if (!sendOptions.subject || (!sendOptions.html && !sendOptions.text && !sendOptions.react)) {
+         throw new MedusaError(MedusaError.Types.INVALID_DATA, "Resend service: The requested templates were not found. Check template path in config.")
       }
 
       const attachments = await this.fetchAttachments(
@@ -197,7 +197,7 @@ class ResendService extends NotificationService {
          } else {
             sendOptions.subject = await this.compileSubjectTemplate(templateId, data)
          }
-   
+
          if (this.options_.body_template_type === 'react') {
             const react = await this.compileReactTemplate(templateId, data)
             if (react) sendOptions.react = react
@@ -206,9 +206,9 @@ class ResendService extends NotificationService {
             if (html) sendOptions.html = html
             if (text) sendOptions.text = text
          }
-   
+
          if (!sendOptions.subject || (!sendOptions.html && !sendOptions.text && !sendOptions.react)) {
-            return { 
+            return {
                message: "Message not sent. Templates were not found or a compile error was encountered.",
                results: {
                   sendOptions
@@ -237,8 +237,8 @@ class ResendService extends NotificationService {
       const textTemplate = fs.existsSync(path.join(this.templatePath_, templateId, 'text.hbs')) ?
          Handlebars.compile(fs.readFileSync(path.join(this.templatePath_, templateId, 'text.hbs'), "utf8")) : null
 
-      return { 
-         html: htmlTemplate? htmlTemplate(data) : null, 
+      return {
+         html: htmlTemplate? htmlTemplate(data) : null,
          text: textTemplate? textTemplate(data) : null
       }
    }
@@ -568,7 +568,7 @@ class ResendService extends NotificationService {
          ],
       })
 
-      const { tax_total, shipping_total, gift_card_total, total } = order
+      const { tax_total, shipping_total, gift_card_total, total, shipping_tax_total } = order
 
       const currencyCode = order.currency_code.toUpperCase()
 
@@ -643,6 +643,7 @@ class ResendService extends NotificationService {
          tax_total: `${this.humanPrice_(tax_total, currencyCode)} ${currencyCode}`,
          discount_total: `${this.humanPrice_(discountTotal, currencyCode)} ${currencyCode}`,
          shipping_total: `${this.humanPrice_(shipping_total, currencyCode)} ${currencyCode}`,
+         shipping_total_incl_tax: `${this.humanPrice_(shipping_total + shipping_tax_total, currencyCode)} ${currencyCode}`,
          total: `${this.humanPrice_(total, currencyCode)} ${currencyCode}`,
       }
    }
@@ -687,8 +688,8 @@ class ResendService extends NotificationService {
          {
             id: returnRequest.items.map(({ item_id }) => item_id),
          },
-         { 
-            relations: ["tax_lines"] 
+         {
+            relations: ["tax_lines"]
          }
       )
 
