@@ -159,9 +159,12 @@ class ResendService extends NotificationService {
       })
 
       let status
-      await this.transporter_.sendMail(sendOptions)
+      await this.transporter_.sendEmail(sendOptions)
       .then(() => { status = "sent" })
       .catch((error) => { status = "failed"; console.log(error) })
+
+      // We don't want heavy docs stored in DB
+      delete sendOptions.attachments
 
       return { to: sendOptions.to, status, data: sendOptions }
    }
